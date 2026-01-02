@@ -3,7 +3,23 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
+const axios = require("axios");
 
+const getAllBooksAsync = async () => {
+    try {
+      const response = await axios.get(
+        "https://omobayonlewi-8080.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/"
+      );
+      return response.data;
+    } catch (error) {
+      return { error: error.message };
+    }
+};
+
+public_users.get("/async/books", async (req, res) => {
+  const data = await getAllBooksAsync();
+  return res.json(data);
+});
 
 public_users.post("/register", (req, res) => {
     const { username, password } = req.body;
